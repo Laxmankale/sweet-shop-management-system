@@ -20,7 +20,7 @@ public class AuthServiceTest {
         UserRepository repo = mock(UserRepository.class);
         PasswordEncoder encoder = mock(PasswordEncoder.class);
 
-        AuthService service = new AuthService(repo, encoder, null); // JwtService not needed now
+        AuthService service = new AuthService(repo, encoder, null); 
 
         RegisterRequest request = new RegisterRequest();
         request.setEmail("test@example.com");
