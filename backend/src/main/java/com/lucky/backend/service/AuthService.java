@@ -25,7 +25,13 @@ public class AuthService {
 
 
 	public User register(RegisterRequest request) {
-        return null;
+		User user = new User();
+	    user.setId(UUID.randomUUID());
+	    user.setEmail(request.getEmail());
+	    user.setPasswordHash(encoder.encode(request.getPassword()));
+	    user.setRole("USER");
+
+	    return userRepository.save(user);
     }
     
  
