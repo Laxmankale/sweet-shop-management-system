@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface SweetRepository extends JpaRepository<Sweet, Long> {
 
-    List<Sweet> findByNameContainingIgnoreCase(String name);
+	List<Sweet> findByNameContainingIgnoreCase(String name);
 
-    List<Sweet> findByCategoryIgnoreCase(String category);
+	List<Sweet> findByCategoryIgnoreCase(String category);
+
+	List<Sweet> findByPriceBetween(double min, double max);
+
 }
