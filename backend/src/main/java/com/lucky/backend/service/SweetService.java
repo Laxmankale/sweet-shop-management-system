@@ -15,4 +15,7 @@ public class SweetService {
 
 	}
 
+	public void purchaseSweet(Long id) {
+	}
+
 }

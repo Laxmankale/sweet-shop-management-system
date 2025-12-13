@@ -57,4 +57,10 @@ public class SweetController {
 	    sweetService.deleteSweet(id);
 	}
 
+	@PostMapping("/{id}/purchase")
+	@ResponseStatus(HttpStatus.OK)
+	public void purchaseSweet(@PathVariable Long id) {
+	    sweetService.purchaseSweet(id);
+	}
+
 }
