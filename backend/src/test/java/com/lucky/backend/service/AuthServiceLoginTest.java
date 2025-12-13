@@ -14,6 +14,8 @@ import static org.mockito.Mockito.*;
 
 public class AuthServiceLoginTest {
 
+	
+	
     @Test
     void login_shouldReturnJwtToken_whenCredentialsAreValid() {
 
@@ -21,7 +23,7 @@ public class AuthServiceLoginTest {
         PasswordEncoder encoder = mock(PasswordEncoder.class);
         JwtService jwt = mock(JwtService.class);
 
-        AuthService service = new AuthService(repo, encoder, jwt);
+        AuthService service = new AuthService(repo, jwt, encoder);
 
         LoginRequest req = new LoginRequest();
         req.setEmail("test@example.com");
@@ -30,7 +32,7 @@ public class AuthServiceLoginTest {
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setEmail("test@example.com");
-        user.setPasswordHash("hashed-pass");
+        user.setPassword("hashed-pass");
 
         when(repo.findByEmail("test@example.com")).thenReturn(Optional.of(user));
         when(encoder.matches("password123", "hashed-pass")).thenReturn(true);

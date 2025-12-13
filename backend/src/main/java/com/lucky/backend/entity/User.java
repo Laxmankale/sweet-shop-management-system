@@ -5,7 +5,7 @@ import java.util.UUID;
 public class User {
 	private UUID id;
 	private String email;
-	private String passwordHash;
+	private String password;
 	private String role = "USER";
 
 	public UUID getId() {
@@ -24,12 +24,12 @@ public class User {
 		this.email = email;
 	}
 
-	public String getPasswordHash() {
-		return passwordHash;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setPasswordHash(String passwordHash) {
-		this.passwordHash = passwordHash;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getRole() {

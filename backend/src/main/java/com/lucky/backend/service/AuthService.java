@@ -3,49 +3,40 @@ package com.lucky.backend.service;
 import com.lucky.backend.dto.LoginRequest;
 import com.lucky.backend.dto.RegisterRequest;
 import com.lucky.backend.entity.User;
-import com.lucky.backend.exception.InvalidCredentialsException;
 import com.lucky.backend.repository.UserRepository;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 public class AuthService {
-	private final UserRepository userRepository;
-	private final PasswordEncoder encoder;
-	private final JwtService jwtService;
 
-	public AuthService(UserRepository userRepository, PasswordEncoder encoder, JwtService jwtService) {
-		super();
-		this.userRepository = userRepository;
-		this.encoder = encoder;
-		this.jwtService = jwtService;
-	}
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
-	public User register(RegisterRequest request) {
-		User user = new User();
-		user.setId(UUID.randomUUID());
-		user.setEmail(request.getEmail());
-		user.setPasswordHash(encoder.encode(request.getPassword()));
-		user.setRole("USER");
+    public AuthService(UserRepository userRepository,
+                       JwtService jwtService,
+                       PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-		return userRepository.save(user);
-	}
+    public User register(RegisterRequest request) {
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        return userRepository.save(user);
+    }
 
-	public String login(LoginRequest request) {
-		User user = userRepository.findByEmail(request.getEmail()).orElseThrow(InvalidCredentialsException::new);
+    public String login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-		validatePassword(request.getPassword(), user.getPasswordHash());
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
 
-		return jwtService.generateToken(user);
-
-	}
-
-	private void validatePassword(String rawPassword, String hashedPassword) {
-		if (!encoder.matches(rawPassword, hashedPassword)) {
-			throw new InvalidCredentialsException();
-		}
-	}
+        return jwtService.generateToken(user);
+    }
 }

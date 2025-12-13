@@ -19,8 +19,10 @@ public class AuthServiceTest {
 
         UserRepository repo = mock(UserRepository.class);
         PasswordEncoder encoder = mock(PasswordEncoder.class);
-
-        AuthService service = new AuthService(repo, encoder, null); 
+        JwtService jwt = mock(JwtService.class);
+        
+        AuthService service = new AuthService(repo, jwt, encoder);
+ 
 
         RegisterRequest request = new RegisterRequest();
         request.setEmail("test@example.com");
@@ -31,13 +33,13 @@ public class AuthServiceTest {
         User saved = new User();
         saved.setId(UUID.randomUUID());
         saved.setEmail("test@example.com");
-        saved.setPasswordHash("hashed-pass");
+        saved.setPassword("hashed-pass");
 
         when(repo.save(any(User.class))).thenReturn(saved);
 
         User result = service.register(request);
 
-        assertEquals("hashed-pass", result.getPasswordHash());
+        assertEquals("hashed-pass", result.getPassword());
         verify(encoder, times(1)).encode("password123");
         verify(repo, times(1)).save(any(User.class));
     }
