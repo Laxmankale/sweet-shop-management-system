@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,14 +36,17 @@ public class SweetController {
 	public List<String> getAllSweets() {
 		return List.of(); // minimal implementation
 	}
-	
-	  @GetMapping("/search")
-	    public List<String> searchSweets(
-	            @RequestParam(required = false) String name,
-	            @RequestParam(required = false) String category,
-	            @RequestParam(required = false) Double minPrice,
-	            @RequestParam(required = false) Double maxPrice
-	    ) {
-	        return List.of();
-	    }
+
+	@GetMapping("/search")
+	public List<String> searchSweets(@RequestParam(required = false) String name,
+			@RequestParam(required = false) String category, @RequestParam(required = false) Double minPrice,
+			@RequestParam(required = false) Double maxPrice) {
+		return List.of();
+	}
+
+	@PutMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void updateSweet(@PathVariable Long id, @RequestBody SweetCreateRequest request) {
+		sweetService.updateSweet(id, request);
+	}
 }

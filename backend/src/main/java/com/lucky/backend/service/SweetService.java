@@ -1,12 +1,14 @@
 package com.lucky.backend.service;
 
-import org.springframework.stereotype.Service;
-
 import com.lucky.backend.dto.SweetCreateRequest;
 
-@Service
-public interface SweetService {
+public class SweetService {
 
-    void createSweet(SweetCreateRequest request);
+	public void updateSweet(Long id, SweetCreateRequest request) {
+	}
+
+	public void createSweet(SweetCreateRequest request) {
+
+	}
 
 }
