@@ -63,4 +63,10 @@ public class SweetController {
 	    sweetService.purchaseSweet(id);
 	}
 
+	@PostMapping("/{id}/restock")
+	@ResponseStatus(HttpStatus.OK)
+	public void restockSweet(@PathVariable Long id) {
+	    sweetService.restockSweet(id);
+	}
+
 }

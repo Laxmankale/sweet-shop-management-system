@@ -18,4 +18,7 @@ public class SweetService {
 	public void purchaseSweet(Long id) {
 	}
 
+	public void restockSweet(Long id) {
+	}
+
 }
