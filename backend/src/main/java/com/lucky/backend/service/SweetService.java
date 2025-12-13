@@ -11,4 +11,8 @@ public class SweetService {
 
 	}
 
+	public void deleteSweet(Long id) {
+
+	}
+
 }
