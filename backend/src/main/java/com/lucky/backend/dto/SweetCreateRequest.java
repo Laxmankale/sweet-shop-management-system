@@ -1,10 +1,20 @@
 package com.lucky.backend.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 public class SweetCreateRequest {
 
+	@NotBlank
     private String name;
+	
+    @NotBlank
     private String category;
+    
+    @Min(1)
     private double price;
+    
+    @Min(0)
     private int quantity;
 
     public String getName() {
