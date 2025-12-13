@@ -7,7 +7,7 @@ import com.lucky.backend.entity.User;
 @Service
 public class JwtService {
 
-	public Object generateToken(User user) {
+	public String generateToken(User user) {
 		return null;
 	}
 }

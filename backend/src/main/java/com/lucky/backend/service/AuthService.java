@@ -33,8 +33,15 @@ public class AuthService {
 		return userRepository.save(user);
 	}
 
-	public String login(LoginRequest req) {
-		return null;
+	public String login(LoginRequest request) {
+		User user = userRepository.findByEmail(request.getEmail())
+	            .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+	    if (!encoder.matches(request.getPassword(), user.getPasswordHash())) {
+	        throw new RuntimeException("Invalid credentials");
+	    }
+
+	    return jwtService.generateToken(user);
 	}
 
 }
