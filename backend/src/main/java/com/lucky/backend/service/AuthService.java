@@ -3,6 +3,7 @@ package com.lucky.backend.service;
 import com.lucky.backend.dto.LoginRequest;
 import com.lucky.backend.dto.RegisterRequest;
 import com.lucky.backend.entity.User;
+import com.lucky.backend.exception.InvalidCredentialsException;
 import com.lucky.backend.repository.UserRepository;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,14 +35,17 @@ public class AuthService {
 	}
 
 	public String login(LoginRequest request) {
-		User user = userRepository.findByEmail(request.getEmail())
-	            .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+		User user = userRepository.findByEmail(request.getEmail()).orElseThrow(InvalidCredentialsException::new);
 
-	    if (!encoder.matches(request.getPassword(), user.getPasswordHash())) {
-	        throw new RuntimeException("Invalid credentials");
-	    }
+		validatePassword(request.getPassword(), user.getPasswordHash());
 
-	    return jwtService.generateToken(user);
+		return jwtService.generateToken(user);
+
 	}
 
+	private void validatePassword(String rawPassword, String hashedPassword) {
+		if (!encoder.matches(rawPassword, hashedPassword)) {
+			throw new InvalidCredentialsException();
+		}
+	}
 }
