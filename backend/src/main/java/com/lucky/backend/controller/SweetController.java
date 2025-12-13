@@ -1,17 +1,36 @@
 package com.lucky.backend.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.lucky.backend.dto.SweetCreateRequest;
+import com.lucky.backend.service.SweetService;
 
 @RestController
 @RequestMapping("/api/sweets")
 public class SweetController {
 
-    @GetMapping
-    public List<String> getAllSweets() {
-        return List.of(); // minimal implementation
-    }
+	private final SweetService sweetService;
+
+	public SweetController(SweetService sweetService) {
+		this.sweetService = sweetService;
+	}
+
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public void createSweet(@RequestBody SweetCreateRequest request) {
+		sweetService.createSweet(request);
+	}
+
+	@GetMapping
+	public List<String> getAllSweets() {
+		return List.of(); // minimal implementation
+	}
 }
