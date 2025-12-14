@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = SweetController.class)
-@AutoConfigureMockMvc(addFilters = false) // disable security
+@AutoConfigureMockMvc(addFilters = false)
 class SweetControllerPurchaseTest {
 
     @Autowired
@@ -22,9 +22,15 @@ class SweetControllerPurchaseTest {
     @MockBean
     private SweetService sweetService;
 
+    @MockBean
+    private com.lucky.backend.service.JwtService jwtService;
+
+    @MockBean
+    private com.lucky.backend.repository.UserRepository userRepository;
+
     @Test
     void purchaseSweet_shouldReturn200() throws Exception {
         mockMvc.perform(post("/api/sweets/{id}/purchase", 1L))
-               .andExpect(status().isOk());
+                .andExpect(status().isOk());
     }
 }

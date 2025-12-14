@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.lucky.backend.service.SweetService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -13,12 +16,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class SweetControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Test
-    void getAllSweets_shouldReturn200() throws Exception {
-        mockMvc.perform(get("/api/sweets"))
-                .andExpect(status().isOk());
-    }
+	@MockBean
+	private SweetService sweetService;
+
+	@MockBean
+	private com.lucky.backend.service.JwtService jwtService;
+
+	@MockBean
+	private com.lucky.backend.repository.UserRepository userRepository;
+
+	@Test
+	void getAllSweets_shouldReturn200() throws Exception {
+		mockMvc.perform(get("/api/sweets")).andExpect(status().isOk());
+	}
 }

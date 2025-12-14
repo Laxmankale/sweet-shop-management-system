@@ -26,6 +26,12 @@ class AuthControllerLoginTest {
     @MockBean
     private AuthService authService;
 
+    @MockBean
+    private com.lucky.backend.service.JwtService jwtService;
+
+    @MockBean
+    private com.lucky.backend.repository.UserRepository userRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -41,7 +47,7 @@ class AuthControllerLoginTest {
         mockMvc.perform(
                 post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        ).andExpect(status().isOk());
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
     }
 }

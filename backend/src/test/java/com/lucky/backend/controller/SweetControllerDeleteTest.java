@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = SweetController.class)
-@AutoConfigureMockMvc(addFilters = false) // disable security for controller test
+@AutoConfigureMockMvc(addFilters = false)
 class SweetControllerDeleteTest {
 
     @Autowired
@@ -22,9 +22,15 @@ class SweetControllerDeleteTest {
     @MockBean
     private SweetService sweetService;
 
+    @MockBean
+    private com.lucky.backend.service.JwtService jwtService;
+
+    @MockBean
+    private com.lucky.backend.repository.UserRepository userRepository;
+
     @Test
     void deleteSweet_shouldReturn204() throws Exception {
         mockMvc.perform(delete("/api/sweets/1"))
-               .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
     }
 }

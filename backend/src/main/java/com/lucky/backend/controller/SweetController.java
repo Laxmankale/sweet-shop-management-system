@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucky.backend.dto.SweetCreateRequest;
+import com.lucky.backend.dto.SweetUpdateRequest;
 import com.lucky.backend.entity.Sweet;
 import com.lucky.backend.service.SweetService;
 
@@ -48,8 +49,11 @@ public class SweetController {
 
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void updateSweet(@PathVariable Long id, @RequestBody SweetCreateRequest request) {
-		sweetService.updateSweet(id, request);
+	public Sweet updateSweet(
+	        @PathVariable Long id,
+	        @RequestBody SweetUpdateRequest request
+	) {
+	    return sweetService.update(id, request);
 	}
 
 	@DeleteMapping("/{id}")

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.lucky.backend.dto.SweetCreateRequest;
+import com.lucky.backend.dto.SweetUpdateRequest;
 import com.lucky.backend.entity.Sweet;
 import com.lucky.backend.repository.SweetRepository;
 
@@ -18,15 +19,20 @@ public class SweetService {
 		this.sweetRepository = sweetRepository;
 	}
 
-	public void updateSweet(Long id, SweetCreateRequest request) {
+	public Sweet update(Long id, SweetUpdateRequest request) {
 		Sweet sweet = sweetRepository.findById(id).orElseThrow(() -> new RuntimeException("Sweet not found"));
 
-		sweet.setName(request.getName());
-		sweet.setCategory(request.getCategory());
-		sweet.setPrice(BigDecimal.valueOf(request.getPrice()));
-		sweet.setQuantity(request.getQuantity());
+		if (request.getName() != null) {
+			sweet.setName(request.getName());
+		}
+		if (request.getPrice() != null) {
+			sweet.setPrice(request.getPrice());
+		}
+		if (request.getQuantity() != null) {
+			sweet.setQuantity(request.getQuantity());
+		}
 
-		sweetRepository.save(sweet);
+		return sweetRepository.save(sweet);
 	}
 
 	public void createSweet(SweetCreateRequest request) {

@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = SweetController.class)
-@AutoConfigureMockMvc(addFilters = false) // disable security for controller test
+@AutoConfigureMockMvc(addFilters = false)
 class SweetControllerCreateTest {
 
     @Autowired
@@ -24,6 +24,12 @@ class SweetControllerCreateTest {
 
     @MockBean
     private SweetService sweetService;
+
+    @MockBean
+    private com.lucky.backend.service.JwtService jwtService;
+
+    @MockBean
+    private com.lucky.backend.repository.UserRepository userRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -40,8 +46,7 @@ class SweetControllerCreateTest {
         mockMvc.perform(
                 post("/api/sweets")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        )
-        .andExpect(status().isCreated());
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated());
     }
 }

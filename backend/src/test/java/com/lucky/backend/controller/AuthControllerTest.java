@@ -18,10 +18,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(
-    controllers = AuthController.class,
-    excludeAutoConfiguration = SecurityAutoConfiguration.class
-)
+@WebMvcTest(controllers = AuthController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 @ActiveProfiles("test")
 class AuthControllerTest {
 
@@ -30,6 +27,12 @@ class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private com.lucky.backend.service.JwtService jwtService;
+
+    @MockBean
+    private com.lucky.backend.repository.UserRepository userRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -44,7 +47,7 @@ class AuthControllerTest {
         mockMvc.perform(
                 post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        ).andExpect(status().isCreated());
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated());
     }
 }

@@ -1,44 +1,60 @@
 package com.lucky.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lucky.backend.dto.SweetCreateRequest;
-import com.lucky.backend.service.SweetService;
+import org.springframework.http.MediaType;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lucky.backend.dto.SweetUpdateRequest;
+import com.lucky.backend.entity.Sweet;
+import com.lucky.backend.service.SweetService;
 
-@WebMvcTest(controllers = SweetController.class)
-@AutoConfigureMockMvc(addFilters = false) // disable security for controller test
+@WebMvcTest(SweetController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class SweetControllerUpdateTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @MockBean
-    private SweetService sweetService;
+	@Autowired
+	private ObjectMapper objectMapper;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+	@MockBean
+	private SweetService sweetService;
 
-    @Test
-    void updateSweet_shouldReturn200_whenValidRequest() throws Exception {
-        SweetCreateRequest request = new SweetCreateRequest();
-        request.setName("Updated Laddu");
-        request.setCategory("Festival");
-        request.setPrice(120.0);
-        request.setQuantity(50);
+	@MockBean
+	private com.lucky.backend.service.JwtService jwtService;
 
-        mockMvc.perform(
-                put("/api/sweets/{id}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        ).andExpect(status().isOk());
-    }
+	@MockBean
+	private com.lucky.backend.repository.UserRepository userRepository;
+
+	@Test
+	void updateSweet_shouldReturn200_whenValidRequest() throws Exception {
+
+		SweetUpdateRequest request = new SweetUpdateRequest();
+		request.setName("Ladoo");
+		request.setPrice(BigDecimal.valueOf(100));
+
+		Sweet updated = new Sweet();
+		updated.setId(1L);
+		updated.setName("Ladoo");
+		updated.setPrice(BigDecimal.valueOf(100));
+
+		when(sweetService.update(anyLong(), any())).thenReturn(updated);
+
+		mockMvc.perform(put("/api/sweets/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk());
+	}
 }

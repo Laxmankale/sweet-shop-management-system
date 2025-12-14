@@ -22,6 +22,12 @@ class SweetControllerSearchTest {
     @MockBean
     private SweetService sweetService; // ✅ REQUIRED
 
+    @MockBean
+    private com.lucky.backend.service.JwtService jwtService;
+
+    @MockBean
+    private com.lucky.backend.repository.UserRepository userRepository;
+
     @Test
     void searchSweets_shouldReturn200() throws Exception {
         mockMvc.perform(
@@ -29,7 +35,7 @@ class SweetControllerSearchTest {
                         .param("name", "laddu")
                         .param("category", "festival")
                         .param("minPrice", "10")
-                        .param("maxPrice", "100")
-        ).andExpect(status().isOk());
+                        .param("maxPrice", "100"))
+                .andExpect(status().isOk());
     }
 }
