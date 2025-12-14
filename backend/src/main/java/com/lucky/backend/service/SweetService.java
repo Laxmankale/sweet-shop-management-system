@@ -50,12 +50,15 @@ public class SweetService {
 		return sweetRepository.findAll();
 	}
 
-	public List<Sweet> search(String name, String category) {
+	public List<Sweet> search(String name, String category, Double minPrice, Double maxPrice) {
 		if (name != null) {
 			return sweetRepository.findByNameContainingIgnoreCase(name);
 		}
 		if (category != null) {
 			return sweetRepository.findByCategoryIgnoreCase(category);
+		}
+		if (minPrice != null && maxPrice != null) {
+			return sweetRepository.findByPriceBetween(minPrice, maxPrice);
 		}
 		return sweetRepository.findAll();
 	}
@@ -64,15 +67,20 @@ public class SweetService {
 		sweetRepository.deleteById(id);
 	}
 
-	public void purchaseSweet(Long id) {
+	public Sweet purchaseSweet(Long id, Integer quantity) {
 		Sweet sweet = sweetRepository.findById(id).orElseThrow(() -> new RuntimeException("Sweet not found"));
 
-		if (sweet.getQuantity() <= 0) {
-			throw new RuntimeException("Out of stock");
+		if (quantity == null || quantity <= 0) {
+			throw new IllegalArgumentException("Quantity must be greater than 0");
 		}
 
-		sweet.setQuantity(sweet.getQuantity() - 1);
-		sweetRepository.save(sweet);
+		if (sweet.getQuantity() < quantity) {
+			throw new IllegalArgumentException(
+					"Insufficient stock. Available: " + sweet.getQuantity() + ", Requested: " + quantity);
+		}
+
+		sweet.setQuantity(sweet.getQuantity() - quantity);
+		return sweetRepository.save(sweet);
 	}
 
 	public void restockSweet(Long id) {

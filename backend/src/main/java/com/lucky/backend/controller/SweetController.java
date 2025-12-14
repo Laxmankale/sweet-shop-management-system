@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lucky.backend.dto.PurchaseRequest;
 import com.lucky.backend.dto.SweetCreateRequest;
 import com.lucky.backend.dto.SweetUpdateRequest;
 import com.lucky.backend.entity.Sweet;
@@ -44,16 +45,15 @@ public class SweetController {
 	public List<Sweet> searchSweets(@RequestParam(required = false) String name,
 			@RequestParam(required = false) String category, @RequestParam(required = false) Double minPrice,
 			@RequestParam(required = false) Double maxPrice) {
-		return sweetService.search(name, category);
+		return sweetService.search(name, category, minPrice, maxPrice);
 	}
 
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Sweet updateSweet(
-	        @PathVariable Long id,
-	        @RequestBody SweetUpdateRequest request
-	) {
-	    return sweetService.update(id, request);
+			@PathVariable Long id,
+			@RequestBody SweetUpdateRequest request) {
+		return sweetService.update(id, request);
 	}
 
 	@DeleteMapping("/{id}")
@@ -64,8 +64,8 @@ public class SweetController {
 
 	@PostMapping("/{id}/purchase")
 	@ResponseStatus(HttpStatus.OK)
-	public void purchaseSweet(@PathVariable Long id) {
-		sweetService.purchaseSweet(id);
+	public Sweet purchaseSweet(@PathVariable Long id, @RequestBody PurchaseRequest request) {
+		return sweetService.purchaseSweet(id, request.getQuantity());
 	}
 
 	@PostMapping("/{id}/restock")
