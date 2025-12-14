@@ -4,6 +4,8 @@ import SweetCard from '../components/SweetCard';
 import SearchBar from '../components/SearchBar';
 import PurchaseModal from '../components/PurchaseModal';
 import SweetFormModal from '../components/SweetFormModal';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import RestockModal from '../components/RestockModal';
 import Button from '../components/Button';
 
 const SweetList = () => {
@@ -16,6 +18,11 @@ const SweetList = () => {
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
     const [showSweetFormModal, setShowSweetFormModal] = useState(false);
     const [editingSweet, setEditingSweet] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deletingSweet, setDeletingSweet] = useState(null);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [showRestockModal, setShowRestockModal] = useState(false);
+    const [restockingSweet, setRestockingSweet] = useState(null);
 
     const uniqueCategories = useMemo(() => {
         const categories = allSweets.map(sweet => sweet.category).filter(Boolean);
@@ -98,11 +105,34 @@ const SweetList = () => {
     };
 
     const handleDelete = (sweet) => {
-        console.log('Delete sweet:', sweet);
+        setDeletingSweet(sweet);
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        setDeleteLoading(true);
+        try {
+            await sweetService.deleteSweet(deletingSweet.id);
+            setShowDeleteModal(false);
+            setDeletingSweet(null);
+            fetchSweets();
+        } catch (err) {
+            console.error('Delete failed:', err);
+        } finally {
+            setDeleteLoading(false);
+        }
     };
 
     const handleRestock = (sweet) => {
-        console.log('Restock sweet:', sweet);
+        setRestockingSweet(sweet);
+        setShowRestockModal(true);
+    };
+
+    const handleConfirmRestock = async (sweetId, quantity) => {
+        await sweetService.restockSweet(sweetId, quantity);
+        setShowRestockModal(false);
+        setRestockingSweet(null);
+        fetchSweets();
     };
 
     return (
@@ -191,6 +221,29 @@ const SweetList = () => {
                         setEditingSweet(null);
                     }}
                     onSave={handleSaveSweet}
+                />
+            )}
+
+            {showDeleteModal && deletingSweet && (
+                <DeleteConfirmModal
+                    sweet={deletingSweet}
+                    onClose={() => {
+                        setShowDeleteModal(false);
+                        setDeletingSweet(null);
+                    }}
+                    onConfirm={handleConfirmDelete}
+                    loading={deleteLoading}
+                />
+            )}
+
+            {showRestockModal && restockingSweet && (
+                <RestockModal
+                    sweet={restockingSweet}
+                    onClose={() => {
+                        setShowRestockModal(false);
+                        setRestockingSweet(null);
+                    }}
+                    onRestock={handleConfirmRestock}
                 />
             )}
         </div>
