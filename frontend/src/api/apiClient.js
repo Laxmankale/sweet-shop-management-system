@@ -33,9 +33,18 @@ apiClient.interceptors.response.use(
             window.location.href = '/login';
         }
 
+        if (error.code === 'ERR_NETWORK') {
+            return Promise.reject(new Error('Cannot connect to server. Please ensure the backend is running on http://localhost:8080'));
+        }
+
+        if (error.code === 'ERR_BAD_REQUEST' && error.response?.status === 0) {
+            return Promise.reject(new Error('CORS error. Please check backend CORS configuration.'));
+        }
+
         const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
         return Promise.reject(new Error(errorMessage));
     }
 );
 
 export default apiClient;
+
