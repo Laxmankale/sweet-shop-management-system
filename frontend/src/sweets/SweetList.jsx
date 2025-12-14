@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import sweetService from '../api/sweetService';
 import SweetCard from '../components/SweetCard';
 import SearchBar from '../components/SearchBar';
+import PurchaseModal from '../components/PurchaseModal';
 
 const SweetList = () => {
     const [sweets, setSweets] = useState([]);
@@ -9,6 +10,8 @@ const SweetList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [isSearching, setIsSearching] = useState(false);
+    const [selectedSweet, setSelectedSweet] = useState(null);
+    const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
     const uniqueCategories = useMemo(() => {
         const categories = allSweets.map(sweet => sweet.category).filter(Boolean);
@@ -58,7 +61,15 @@ const SweetList = () => {
     };
 
     const handlePurchase = (sweet) => {
-        console.log('Purchase sweet:', sweet);
+        setSelectedSweet(sweet);
+        setShowPurchaseModal(true);
+    };
+
+    const handleConfirmPurchase = async (sweetId, quantity) => {
+        await sweetService.purchaseSweet(sweetId, quantity);
+        setShowPurchaseModal(false);
+        setSelectedSweet(null);
+        fetchSweets();
     };
 
     const handleEdit = (sweet) => {
@@ -126,6 +137,17 @@ const SweetList = () => {
                         ))}
                     </div>
                 </div>
+            )}
+
+            {showPurchaseModal && selectedSweet && (
+                <PurchaseModal
+                    sweet={selectedSweet}
+                    onClose={() => {
+                        setShowPurchaseModal(false);
+                        setSelectedSweet(null);
+                    }}
+                    onPurchase={handleConfirmPurchase}
+                />
             )}
         </div>
     );
