@@ -1,8 +1,6 @@
-import { useAuth } from '../auth/AuthContext';
 import Button from './Button';
 
 const SweetCard = ({ sweet, onPurchase, onEdit, onDelete, onRestock }) => {
-    const { isAdmin } = useAuth();
     const isOutOfStock = sweet.quantity === 0;
 
     return (
@@ -36,49 +34,43 @@ const SweetCard = ({ sweet, onPurchase, onEdit, onDelete, onRestock }) => {
                 </div>
 
                 <div className="space-y-2">
-                    {!isAdmin() && (
-                        <Button
-                            variant="primary"
-                            fullWidth
-                            disabled={isOutOfStock}
-                            onClick={() => onPurchase(sweet)}
-                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                        >
-                            {isOutOfStock ? 'Out of Stock' : 'Purchase'}
-                        </Button>
-                    )}
+                    <Button
+                        variant="primary"
+                        fullWidth
+                        disabled={isOutOfStock}
+                        onClick={() => onPurchase(sweet)}
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    >
+                        {isOutOfStock ? 'Out of Stock' : 'Purchase'}
+                    </Button>
 
-                    {isAdmin() && (
-                        <div className="grid grid-cols-2 gap-2">
-                            <Button
-                                variant="outline"
-                                fullWidth
-                                onClick={() => onEdit(sweet)}
-                                className="text-sm"
-                            >
-                                Edit
-                            </Button>
-                            <Button
-                                variant="outline"
-                                fullWidth
-                                onClick={() => onRestock(sweet)}
-                                className="text-sm text-green-600 border-green-600 hover:bg-green-50"
-                            >
-                                Restock
-                            </Button>
-                        </div>
-                    )}
-
-                    {isAdmin() && (
+                    <div className="grid grid-cols-2 gap-2">
                         <Button
-                            variant="danger"
+                            variant="outline"
                             fullWidth
-                            onClick={() => onDelete(sweet)}
+                            onClick={() => onEdit(sweet)}
                             className="text-sm"
                         >
-                            Delete
+                            Edit
                         </Button>
-                    )}
+                        <Button
+                            variant="outline"
+                            fullWidth
+                            onClick={() => onRestock(sweet)}
+                            className="text-sm text-green-600 border-green-600 hover:bg-green-50"
+                        >
+                            Restock
+                        </Button>
+                    </div>
+
+                    <Button
+                        variant="danger"
+                        fullWidth
+                        onClick={() => onDelete(sweet)}
+                        className="text-sm"
+                    >
+                        Delete
+                    </Button>
                 </div>
             </div>
         </div>

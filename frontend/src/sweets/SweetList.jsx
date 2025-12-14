@@ -3,6 +3,8 @@ import sweetService from '../api/sweetService';
 import SweetCard from '../components/SweetCard';
 import SearchBar from '../components/SearchBar';
 import PurchaseModal from '../components/PurchaseModal';
+import SweetFormModal from '../components/SweetFormModal';
+import Button from '../components/Button';
 
 const SweetList = () => {
     const [sweets, setSweets] = useState([]);
@@ -12,6 +14,8 @@ const SweetList = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [selectedSweet, setSelectedSweet] = useState(null);
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+    const [showSweetFormModal, setShowSweetFormModal] = useState(false);
+    const [editingSweet, setEditingSweet] = useState(null);
 
     const uniqueCategories = useMemo(() => {
         const categories = allSweets.map(sweet => sweet.category).filter(Boolean);
@@ -73,7 +77,24 @@ const SweetList = () => {
     };
 
     const handleEdit = (sweet) => {
-        console.log('Edit sweet:', sweet);
+        setEditingSweet(sweet);
+        setShowSweetFormModal(true);
+    };
+
+    const handleAddSweet = () => {
+        setEditingSweet(null);
+        setShowSweetFormModal(true);
+    };
+
+    const handleSaveSweet = async (sweetIdOrData, sweetData) => {
+        if (editingSweet) {
+            await sweetService.updateSweet(sweetIdOrData, sweetData);
+        } else {
+            await sweetService.createSweet(sweetIdOrData);
+        }
+        setShowSweetFormModal(false);
+        setEditingSweet(null);
+        fetchSweets();
     };
 
     const handleDelete = (sweet) => {
@@ -87,6 +108,17 @@ const SweetList = () => {
     return (
         <div>
             <SearchBar onSearch={handleSearch} onClear={handleClear} categories={uniqueCategories} />
+
+            <div className="mb-6">
+                <Button
+                    variant="primary"
+                    onClick={handleAddSweet}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                >
+                    + Add New Sweet
+                </Button>
+            </div>
+
 
             {loading ? (
                 <div className="flex items-center justify-center py-12">
@@ -147,6 +179,18 @@ const SweetList = () => {
                         setSelectedSweet(null);
                     }}
                     onPurchase={handleConfirmPurchase}
+                />
+            )}
+
+            {showSweetFormModal && (
+                <SweetFormModal
+                    sweet={editingSweet}
+                    categories={uniqueCategories}
+                    onClose={() => {
+                        setShowSweetFormModal(false);
+                        setEditingSweet(null);
+                    }}
+                    onSave={handleSaveSweet}
                 />
             )}
         </div>
